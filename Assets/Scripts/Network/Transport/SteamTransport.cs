@@ -82,7 +82,8 @@ namespace Network.Transport
             }
 
             CSteamID lobbyID = new CSteamID(callback.m_ulSteamIDLobby);
-            string steamID = SteamMisc.GetSteamID();
+            LobbyService.SetLastLobbyID(lobbyID);
+            string steamID = SteamMisc.GetSteamIDString();
             string lobbyName = SteamFriends.GetPersonaName() + "'s Lobby";
 
             SteamMatchmaking.SetLobbyData(lobbyID, Constants.HOST_ADDRESS_STR, steamID);
@@ -111,6 +112,7 @@ namespace Network.Transport
         private void OnLobbyEntered(LobbyEnter_t callback)
         {
             CSteamID lobbyID = new CSteamID(callback.m_ulSteamIDLobby);
+            LobbyService.SetLastLobbyID(lobbyID);
             string hostSteamID = SteamMatchmaking.GetLobbyData(lobbyID, Constants.HOST_ADDRESS_STR);
 
             if (string.IsNullOrEmpty(hostSteamID))

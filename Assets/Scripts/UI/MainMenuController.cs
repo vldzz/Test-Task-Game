@@ -1,6 +1,9 @@
 ﻿using FishNet.Managing;
 using FishNet.Transporting;
+using Network;
 using Network.Transport;
+using Steamworks;
+using UI.Views;
 using UnityEngine;
 using VContainer;
 
@@ -67,6 +70,12 @@ namespace UI
 
         public void StopConnection()
         {
+            if (LobbyService.LastLobbyID.IsValid())
+            {
+                SteamMatchmaking.LeaveLobby(LobbyService.LastLobbyID);
+                LobbyService.SetLastLobbyID(CSteamID.Nil);
+            }
+
             if (_networkManager.IsServerStarted)
             {
                 _networkManager.ServerManager.StopConnection(true);
