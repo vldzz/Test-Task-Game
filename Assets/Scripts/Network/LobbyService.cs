@@ -1,7 +1,7 @@
 ﻿using System;
+using EIS.Runtime.UI.Notification;
 using Steamworks;
 using Steamworks.NET;
-using UnityEngine;
 
 namespace Network
 {
@@ -31,27 +31,42 @@ namespace Network
             if (((EChatMemberStateChange)callback.m_rgfChatMemberStateChange &
                  EChatMemberStateChange.k_EChatMemberStateChangeEntered) != 0)
             {
-                Debug.Log($"Player {personaName} join lobby");
                 OnAddPlayer?.Invoke(changedUser, personaName);
+                Notifier.Builder
+                    .CreateNew()
+                    .SetIcon("success")
+                    .SetNotificationType(Notifier.NotificationType.LEFT_PANEL)
+                    .SetText($"Player {personaName} join lobby")
+                    .ShowNotification(4);
             }
             else if (((EChatMemberStateChange)callback.m_rgfChatMemberStateChange &
                       EChatMemberStateChange.k_EChatMemberStateChangeLeft) != 0)
             {
-                Debug.Log($"Player {personaName} left");
                 OnRemovePlayer?.Invoke(changedUser);
+                ShowFailNotification(personaName, "left");
             }
             else if (((EChatMemberStateChange)callback.m_rgfChatMemberStateChange &
                       EChatMemberStateChange.k_EChatMemberStateChangeDisconnected) != 0)
             {
-                Debug.Log($"Player {personaName} disconnected");
                 OnRemovePlayer?.Invoke(changedUser);
+                ShowFailNotification(personaName, "disconnected");
             }
             else if (((EChatMemberStateChange)callback.m_rgfChatMemberStateChange &
                       EChatMemberStateChange.k_EChatMemberStateChangeKicked) != 0)
             {
-                Debug.Log($"Player {personaName} was kicked");
                 OnRemovePlayer?.Invoke(changedUser);
+                ShowFailNotification(personaName, "was kicked");
             }
+        }
+
+        private void ShowFailNotification(string personaName, string suffix)
+        {
+            Notifier.Builder
+                .CreateNew()
+                .SetIcon("fail")
+                .SetNotificationType(Notifier.NotificationType.LEFT_PANEL)
+                .SetText($"Player {personaName} {suffix}")
+                .ShowNotification(4);
         }
 
         public static void SetLastLobbyID(CSteamID lobbyID)

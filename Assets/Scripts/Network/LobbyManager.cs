@@ -1,10 +1,8 @@
-﻿using FishNet;
-using FishNet.Connection;
+﻿using FishNet.Connection;
 using FishNet.Managing;
 using FishNet.Object;
 using Steamworks;
 using UI.Views;
-using UnityEngine;
 using VContainer;
 
 namespace Network
@@ -37,7 +35,6 @@ namespace Network
         [Server]
         private void OnPlayerKickRequestServer(CSteamID obj)
         {
-            Debug.LogError("Kicked Server");
             NetworkConnection networkConnection = SteamConnectionRegistry.GetConnection(obj);
             if (networkConnection != null)
             {
@@ -48,15 +45,12 @@ namespace Network
         [TargetRpc]
         private void KickPlayer(NetworkConnection networkConnection)
         {
-            Debug.LogError("Kicked target");
-
-
             if (LobbyService.LastLobbyID.IsValid())
             {
                 SteamMatchmaking.LeaveLobby(LobbyService.LastLobbyID);
                 LobbyService.SetLastLobbyID(CSteamID.Nil);
             }
-            
+
             if (_networkManager.IsServerStarted)
             {
                 _networkManager.ServerManager.StopConnection(true);
